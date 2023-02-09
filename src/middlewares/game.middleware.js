@@ -10,10 +10,15 @@ export function gameSchemaValidation(req, res, next) {
 
     const { error } = gameSchema.validate(game, { abortEarly: false })
 
-    if (error) {
-
-        const errorMessages = error.details.map(detail => detail.message)
-        return res.status(400).send(errorMessages)
+    try {
+        if (error) {
+            const errorMessages = error.details.map(detail => detail.message)
+            return res.status(400).send(errorMessages)
+        }
+    }
+    catch (error) {
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
     }
 
     res.locals.game = game
