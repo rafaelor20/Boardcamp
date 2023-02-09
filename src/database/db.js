@@ -1,18 +1,13 @@
-import { MongoClient } from 'mongodb'
-import dotenv from 'dotenv'
-dotenv.config()
+import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
-const mongoClient = new MongoClient(process.env.MONGO_URL)
+const { Pool } = pg;
 
-try {
-  await mongoClient.connect()
-  console.log('Connection with DB is working')
-} catch (error) {
-  console.error(error)
-}
+const configDatabase = {
+  connectionString: process.env.DATABASE_URL,
+};
 
-const db = mongoClient.db()
+if (process.env.MODE === "prod") configDatabase.ssl = true;
 
-export const pollCollection = db.collection('poll')
-export const choiceCollection = db.collection('choice')
-export const voteCollection = db.collection("vote")
+export const db = new Pool(configDatabase);
