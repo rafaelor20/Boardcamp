@@ -13,11 +13,7 @@ export function gameSchemaValidation(req, res, next) {
     if (error) {
 
         const errorMessages = error.details.map(detail => detail.message)
-        return res.status(422).send(errorMessages)
-    } else {
-        if (game.name.length === 0){
-            return res.status(400).send('nome não pode ser vazio')
-        }
+        return res.status(400).send(errorMessages)
     }
 
     res.locals.game = game
