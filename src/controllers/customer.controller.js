@@ -63,14 +63,15 @@ export async function updateCustomer(req, res) {
     try {
 
         const checkCpf = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [customerNewData.cpf])
-        const checkId = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
+        //const checkId = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
 
-        if (checkCpf.rows.length === 1) {
-            if (checkCpf.rows[0].id !== Number(id)) {
-                console.log(typeof checkCpf.rows[0].id)
-                console.log(typeof id)
-                res.status(409).send("Já outro usuário registrado com este cpf")
+        if (checkCpf.rows.length > 0) {
+            for (const elem of checkCpf.rows) {
+                if (elem.id !== Number(id)) {
+                    res.status(409).send("Já outro usuário registrado com este cpf")
+                }
             }
+
         } else if (checkCpf.rows.length < 1) {
             res.status(409).send("Não existe um usuário registrado com este id")
         }
