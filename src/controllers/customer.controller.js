@@ -63,20 +63,28 @@ export async function updateCustomer(req, res) {
     try {
 
         const checkCpf = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [customerNewData.cpf])
-        //const checkId = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
+        const checkId = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
 
         if (checkCpf.rows.length > 0) {
+            let flag = 0
             for (const elem of checkCpf.rows) {
+                console.log(elem)
                 if (elem.id !== Number(id)) {
                     res.status(409).send("Já outro usuário registrado com este cpf")
+                    flag++
                 }
             }
+            if (flag === 0) {
+                await db.query(`UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5;`, [customerNewData.name, customerNewData.phone, customerNewData.cpf, customerNewData.birthday, id])
+                res.status(200).send("Usuário atualizado com sucesso")
+            }
 
-        } else if (checkCpf.rows.length < 1) {
+        } else if (checkId.rows.length < 1) {
             res.status(409).send("Não existe um usuário registrado com este id")
+        } else {
+            await db.query(`UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5;`, [customerNewData.name, customerNewData.phone, customerNewData.cpf, customerNewData.birthday, id])
+            res.status(200).send("Usuário atualizado com sucesso")
         }
-        await db.query(`UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5;`, [customerNewData.name, customerNewData.phone, customerNewData.cpf, customerNewData.birthday, id])
-        res.status(200).send("Usuário atualizado com sucesso")
 
 
     } catch (error) {
