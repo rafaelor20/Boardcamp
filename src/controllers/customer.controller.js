@@ -20,3 +20,18 @@ export async function registerCustomer(req, res) {
         res.status(500).send("Houve um problema no servidor")
     }
 }
+
+export async function listCustomers(req, res) {
+    try {
+
+        const customers = await db.query(`SELECT * FROM customers;`)
+        res.status(200).send(customers.rows)
+
+    }
+    catch (error) {
+
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
+
+    }
+}
