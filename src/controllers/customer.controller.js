@@ -75,7 +75,7 @@ export async function updateCustomer(req, res) {
             res.status(409).send("Não existe um usuário registrado com este id")
         }
         await db.query(`UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5;`, [customerNewData.name, customerNewData.phone, customerNewData.cpf, customerNewData.birthday, id])
-        res.status(201).send("Usuário atualizado com sucesso")
+        res.status(200).send("Usuário atualizado com sucesso")
 
 
     } catch (error) {
