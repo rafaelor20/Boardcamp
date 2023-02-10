@@ -35,3 +35,23 @@ export async function listCustomers(req, res) {
 
     }
 }
+
+export async function getCustomer(req, res) {
+    const id = req.params.id
+    console.log(id)
+    try {
+
+        const customer = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
+
+        if (customer.rows.length === 0) {
+            res.status(404).send("Usuário não existe")
+        } else {
+            res.status(200).send(customer.rows[0])
+        }
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
+    }
+
+}
