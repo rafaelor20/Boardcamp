@@ -38,7 +38,7 @@ export async function listCustomers(req, res) {
 
 export async function getCustomer(req, res) {
     const id = req.params.id
-    console.log(id)
+
     try {
 
         const customer = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
@@ -54,4 +54,32 @@ export async function getCustomer(req, res) {
         res.status(500).send("Houve um problema no servidor")
     }
 
+}
+
+export async function updateCustomer(req, res) {
+    const customerNewData = res.locals.customer
+    const id = req.params.id
+
+    try {
+
+        const checkCpf = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [customerNewData.cpf])
+        const checkId = await db.query(`SELECT * FROM customers WHERE id = $1;`, [id])
+
+        if (checkCpf.rows.length === 1) {
+            if (checkCpf.rows[0].id !== Number(id)) {
+                console.log(typeof checkCpf.rows[0].id)
+                console.log(typeof id)
+                res.status(409).send("Já outro usuário registrado com este cpf")
+            }
+        } else if (checkCpf.rows.length < 1) {
+            res.status(409).send("Não existe um usuário registrado com este id")
+        }
+        await db.query(`UPDATE customers SET name = $1, phone = $2, cpf = $3, birthday = $4 WHERE id = $5;`, [customerNewData.name, customerNewData.phone, customerNewData.cpf, customerNewData.birthday, id])
+        res.status(201).send("Usuário atualizado com sucesso")
+
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
+    }
 }
