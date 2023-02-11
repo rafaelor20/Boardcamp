@@ -4,7 +4,8 @@ export function rentalSchemaValidation(req, res, next) {
     const rental = {
         customerId: req.body.customerId,
         gameId: req.body.gameId,
-        daysRented: Number(req.body.daysRented)
+        daysRented: req.body.daysRented
+        //daysRented: Number(req.body.daysRented)
     }
 
     const { error } = rentalSchema.validate(rental, { abortEarly: false })

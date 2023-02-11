@@ -7,7 +7,6 @@ export async function registerRental(req, res) {
     try {
         const pricePerDay = await db.query(`SELECT "pricePerDay" from games WHERE "id" = $1`, [rentalInfo.gameId])
         
-
         if (pricePerDay.rowCount > 0) {
             const rental = {
                 customerId: rentalInfo.customerId,
@@ -41,7 +40,7 @@ export async function registerRental(req, res) {
             res.status(201).send("Aluguel registrado com sucesso")
 
         } else {
-            res.status(400).send("Este alguel não tem um jogo equivalente")
+            res.status(400).send("Este aluguel não tem um jogo equivalente")
         }
 
 
