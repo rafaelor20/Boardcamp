@@ -106,7 +106,7 @@ export async function listRentals(req, res) {
     }
 }
 
-export async function deleteRentals(req, res) {
+export async function deleteRental(req, res) {
     const id = req.params.id
 
     try {
