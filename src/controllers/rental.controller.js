@@ -18,8 +18,6 @@ export async function registerRental(req, res) {
                 delayFee: null
             }
 
-            console.log(rental)
-
             await db.query(`INSERT INTO rentals (
                 "customerId",
                 "gameId",
@@ -47,5 +45,33 @@ export async function registerRental(req, res) {
     } catch (error) {
         console.error(error)
         res.status(500).send("Houve um problema no servidor")
+    }
+}
+
+export async function listRentals(req, res){
+    try {
+
+        const rentals = await db.query(`SELECT * FROM rentals;`)
+        const games = await db.query(`SELECT * FROM games;`)
+        const customers = await db.query(`SELECT * FROM customers;`)
+        
+        const rentalsList = []
+        for (const elem of rentals.rows){
+            let game = await db.query(`SELECT * FROM games WHERE id = $1;`, [Number(elem.gameId)])
+            let customer = await db.query(`SELECT * FROM customers WHERE id = $1;`, [Number(elem.customerId)])
+            elem.customer = customer.rows[0]
+            elem.game = game.rows[0]
+           
+            rentalsList.push(elem)
+        }
+
+        res.status(200).send(rentalsList)
+
+    }
+    catch (error) {
+
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
+
     }
 }

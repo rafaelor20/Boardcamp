@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import { rentalSchemaValidation } from '../middlewares/rental.middleware.js'
-import { registerRental } from '../controllers/rental.controller.js'
+import { registerRental, listRentals } from '../controllers/rental.controller.js'
 
 const routerRentals = Router()
 
 
 routerRentals.post("/rentals", rentalSchemaValidation, registerRental) 
-//routerRentals.get("/games", getChoices)
+routerRentals.get("/rentals", listRentals)
 
 export default routerRentals
