@@ -5,9 +5,9 @@ export async function registerRental(req, res) {
     const rentalInfo = res.locals.rental
 
     try {
-        const pricePerDay = await db.query(`SELECT "pricePerDay" from games WHERE "id" = $1`, [rentalInfo.gameId])
+        const pricePerDay = await db.query(`SELECT "pricePerDay" FROM games WHERE "id" = $1`, [rentalInfo.gameId])
         
-        if (pricePerDay.rowCount > 0) {
+        if (pricePerDay.rows.length > 0) {
             const rental = {
                 customerId: rentalInfo.customerId,
                 gameId: rentalInfo.gameId,
