@@ -105,3 +105,20 @@ export async function listRentals(req, res) {
 
     }
 }
+
+export async function deleteRentals(req, res) {
+    const id = req.params.id
+
+    try {
+
+        await db.query(`DELETE FROM rentals WHERE id = $1;`, [Number(id)])
+        res.status(200).send("Apagado com sucesso")
+
+    }
+    catch (error) {
+
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
+
+    }
+}
