@@ -2,9 +2,9 @@ import { rentalSchema } from "../schema/rentalSchema.js";
 
 export function rentalSchemaValidation(req, res, next) {
     const rental = {
-        customerId: String(req.body.customerId),
-        gameId: String(req.body.gameId),
-        daysRented: String(req.body.daysRented)
+        customerId: req.body.customerId,
+        gameId: req.body.gameId,
+        daysRented: req.body.daysRented
         //daysRented: Number(req.body.daysRented)
     }
 

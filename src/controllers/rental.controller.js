@@ -9,10 +9,10 @@ export async function registerRental(req, res) {
         
         if (pricePerDay.rows.length > 0) {
             const rental = {
-                customerId: rentalInfo.customerId,
-                gameId: rentalInfo.gameId,
+                customerId: String(rentalInfo.customerId),
+                gameId: String(rentalInfo.gameId),
                 rentDate: dayjs().format('YYYY-MM-DD'),
-                daysRented: rentalInfo.daysRented,
+                daysRented: String(rentalInfo.daysRented),
                 returnDate: null,          // data que o cliente devolveu o jogo (null enquanto não devolvido)
                 originalPrice: pricePerDay.rows[0].pricePerDay * rentalInfo.daysRented,    // preço total do aluguel em centavos (dias alugados vezes o preço por dia do jogo)
                 delayFee: null
