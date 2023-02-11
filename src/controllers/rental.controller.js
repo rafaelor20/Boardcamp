@@ -48,6 +48,31 @@ export async function registerRental(req, res) {
     }
 }
 
+export async function returnRental(req, res){
+    const id = req.params.id
+    const returnDate = dayjs()
+
+    try {
+
+        const rental = await db.query(`SELECT * FROM rentals WHERE id = $1;`, [id])
+        
+        if (rental.rowCount > 0){
+            const game = await db.query(`SELECT * FROM games WHERE id = $1;`, [rental.rows[0].id])
+            const delayFee = game.rows[0].pricePerDay * (returnDate.diff(rental.rows[0].rentDate, "day"))
+            
+            await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`, [returnDate, delayFee, id])
+            res.status(200).send("Dados registrados com sucesso")
+            
+        } else {
+            res.status(404).send("Id fornecido não possui aluguel correspondente")
+        }
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).send("Houve um problema no servidor")
+    }
+}
+
 export async function listRentals(req, res){
     try {
 
