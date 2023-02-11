@@ -110,9 +110,20 @@ export async function deleteRental(req, res) {
     const id = req.params.id
 
     try {
+        const rental = await db.query(`SELECT * FROM rentals WHERE id = $1;`, [Number(id)])
 
-        await db.query(`DELETE FROM rentals WHERE id = $1;`, [Number(id)])
-        res.status(200).send("Apagado com sucesso")
+        if (rental.rowCount === 1) {
+
+            if (rental.rows[0].returnDate === null) {
+                res.status(400).send("Aluguel não foi finalizado")
+            } else {
+                await db.query(`DELETE FROM rentals WHERE id = $1;`, [Number(id)])
+                res.status(200).send("Apagado com sucesso")
+            }
+
+        } else {
+            res.status(400).send("Aluguel não existe")
+        }
 
     }
     catch (error) {
