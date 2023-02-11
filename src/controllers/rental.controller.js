@@ -7,7 +7,7 @@ export async function registerRental(req, res) {
     try {
         const pricePerDay = await db.query(`SELECT "pricePerDay" FROM games WHERE "id" = $1`, [rentalInfo.gameId])
         const stockTotal = await db.query(`SELECT "stockTotal" FROM games WHERE "id" = $1`, [rentalInfo.gameId])
-        const totalRents = await db.query(`SELECT * FROM games WHERE "gameId" = $1`, [rentalInfo.gameId])
+        const totalRents = await db.query(`SELECT * FROM rentals WHERE "gameId" = $1`, [rentalInfo.gameId])
 
         if (stockTotal.rowCount > totalRents.rowCount) {
             if (pricePerDay.rows.length > 0) {
