@@ -100,14 +100,20 @@ export async function listRentals(req, res) {
         for (const elem of rentals.rows) {
             let game = await db.query(`SELECT * FROM games WHERE id = $1;`, [Number(elem.gameId)])
             let customer = await db.query(`SELECT * FROM customers WHERE id = $1;`, [Number(elem.customerId)])
-            elem.customer = customer.rows[0]
-            elem.game = game.rows[0]
+            elem.customer = {
+                id: customer.rows[0].id,
+                name: customer.rows[0].name
+            }
+            elem.game = {
+                id: game.rows[0].id,
+                name: game.rows[0].name
+            }
             rentalsList.push(elem)
         }
         
-        //for(const i of rentalsList){
-        //    console.log(i.game.image)
-        //}
+        for(const i of rentalsList){
+            console.log(i.game.pricePerDay)
+        }
         
         //console.log(rentalsList[0])
         
