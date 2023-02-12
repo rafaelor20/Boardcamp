@@ -102,10 +102,12 @@ export async function listRentals(req, res) {
             let customer = await db.query(`SELECT * FROM customers WHERE id = $1;`, [Number(elem.customerId)])
             elem.customer = customer.rows[0]
             elem.game = game.rows[0]
-
             rentalsList.push(elem)
         }
-
+        
+        //console.log(rentalsList[0].game.image)
+        //console.log(rentalsList[0])
+        
         res.status(200).send(rentalsList)
 
     }
