@@ -105,7 +105,10 @@ export async function listRentals(req, res) {
             rentalsList.push(elem)
         }
         
-        //console.log(rentalsList[0].game.image)
+        //for(const i of rentalsList){
+        //    console.log(i.game.image)
+        //}
+        
         //console.log(rentalsList[0])
         
         res.status(200).send(rentalsList)
