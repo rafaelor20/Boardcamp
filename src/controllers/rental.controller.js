@@ -69,7 +69,10 @@ export async function returnRental(req, res) {
 
             } else {
                 const game = await db.query(`SELECT * FROM games WHERE id = $1;`, [rental.rows[0].gameId])
-                const delayFee = game.rows[0].pricePerDay * ((returnDate.diff(rental.rows[0].rentDate, "day")) - rental.rows[0].daysRented)
+                let delayFee = game.rows[0].pricePerDay * ((returnDate.diff(rental.rows[0].rentDate, "day")) - rental.rows[0].daysRented)
+                if (delayFee < 0){
+                    delayFee = 0
+                }
 
                 await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`, [returnDate, delayFee, id])
                 res.status(200).send("Dados registrados com sucesso")
