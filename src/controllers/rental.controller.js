@@ -61,14 +61,21 @@ export async function returnRental(req, res) {
 
         const rental = await db.query(`SELECT * FROM rentals WHERE id = $1;`, [id])
 
-        if (rental.rowCount > 0) {
+        if (rental.rows[0].returnDate !== null ) {
+
+            res.status(400).send("Aluguel já finalizado")
+
+            
+
+        } else if (rental.rowCount > 0) {
             const game = await db.query(`SELECT * FROM games WHERE id = $1;`, [rental.rows[0].id])
             const delayFee = game.rows[0].pricePerDay * (returnDate.diff(rental.rows[0].rentDate, "day"))
 
             await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`, [returnDate, delayFee, id])
             res.status(200).send("Dados registrados com sucesso")
-
-        } else {
+        } 
+        
+        else {
             res.status(404).send("Id fornecido não possui aluguel correspondente")
         }
 
@@ -122,7 +129,7 @@ export async function deleteRental(req, res) {
             }
 
         } else {
-            res.status(400).send("Aluguel não existe")
+            res.status(404).send("Aluguel não existe")
         }
 
     }
