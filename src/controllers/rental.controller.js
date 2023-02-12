@@ -61,20 +61,21 @@ export async function returnRental(req, res) {
 
         const rental = await db.query(`SELECT * FROM rentals WHERE id = $1;`, [id])
 
-        if (rental.rows[0].returnDate !== null ) {
+        if (rental.rowCount > 0) {
+            console.log(rental.rows[0].returnDate)
+            if (rental.rows[0].returnDate !== null) {
 
-            res.status(400).send("Aluguel já finalizado")
+                res.status(400).send("Aluguel já finalizado")
 
-            
+            } else {
+                const game = await db.query(`SELECT * FROM games WHERE id = $1;`, [rental.rows[0].gameId])
+                const delayFee = game.rows[0].pricePerDay * ((returnDate.diff(rental.rows[0].rentDate, "day")) - rental.rows[0].daysRented)
 
-        } else if (rental.rowCount > 0) {
-            const game = await db.query(`SELECT * FROM games WHERE id = $1;`, [rental.rows[0].id])
-            const delayFee = game.rows[0].pricePerDay * (returnDate.diff(rental.rows[0].rentDate, "day"))
+                await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`, [returnDate, delayFee, id])
+                res.status(200).send("Dados registrados com sucesso")
+            }
+        }
 
-            await db.query(`UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`, [returnDate, delayFee, id])
-            res.status(200).send("Dados registrados com sucesso")
-        } 
-        
         else {
             res.status(404).send("Id fornecido não possui aluguel correspondente")
         }
